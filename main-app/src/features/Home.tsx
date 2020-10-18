@@ -1,8 +1,8 @@
 import * as React from "react";
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Navigation } from "./navigations/Navigation";
-import { Notes } from "./notes/Notes";
 import { Todo } from "./todo/Todo";
+import { Note } from "./notes/Note";
 
 const MAIN_NOTES_ID = "main-notes";
 const TODO_APP_ID = "todo-app";
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Home : React.FC = () => {
   const classes = useStyles();
-
+  
   return (
     <div className={classes.root}>
       <Navigation activeId={MAIN_NOTES_ID} items={navigationItems}>
@@ -36,7 +36,7 @@ const Home : React.FC = () => {
 
         <div>
             <Navigation.Panel id={MAIN_NOTES_ID}>
-                <Notes />
+                <Note />
             </Navigation.Panel>
             <Navigation.Panel id={TODO_APP_ID}>
                 <Todo />

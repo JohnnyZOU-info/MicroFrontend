@@ -1,8 +1,7 @@
 import * as React from "react";
 import { TodoItem, TodoStatus } from "./Model";
 import { nanoid } from 'nanoid';
-import { dispatchMessage } from "../shell/Events";
-import { microApp } from "../shell/Shell";
+import { microApp, publishEvent } from "../../MicroApp";
 
 const TODO_RESET = "@TODO/RESET";
 type TODO_RESET = typeof TODO_RESET;
@@ -76,7 +75,11 @@ const reducer = (state: AppState, action: TodoAction): AppState => {
             status: "Pending"
           };
 
-          dispatchMessage(action.type, { ...newTodo });
+          publishEvent({ 
+            type: action.type, 
+            ...newTodo 
+          });
+
           return {
             items: [ 
               ...state.items, 
@@ -91,9 +94,13 @@ const reducer = (state: AppState, action: TodoAction): AppState => {
                 ...x,
                 status: action.payload.status
               };
-              dispatchMessage(action.type, { ...item });
 
-              return item;
+              publishEvent({ 
+                type: action.type, 
+                ...item 
+              });
+
+              return { ...item };
             }
             
             return x;
@@ -106,7 +113,10 @@ const reducer = (state: AppState, action: TodoAction): AppState => {
         case TODO_REMOVE:
           const item = state.items.find(x => x.id === action.payload.id);
           if (item) {
-            dispatchMessage(action.type, { ...item });
+            publishEvent({ 
+              type: action.type, 
+              ...item 
+            });
           }
 
           return {
@@ -123,8 +133,7 @@ const reducer = (state: AppState, action: TodoAction): AppState => {
 // Store current state in the memory, we should not need to do this with real application
 const appReducer = (state: AppState, action: TodoAction): AppState => {
   const newState = reducer(state, action);
-
-  microApp.appState.items = [ ...newState.items ];
+  microApp.appState.items = newState.items.map(x => { return { ...x } });
   return newState;
 }
 

@@ -1,23 +1,29 @@
 // tslint:disable
 const rewireReactHotLoader = require("react-app-rewire-hot-loader");
-// const rewireUglify = require("./config/rewire-uglify");
-
 module.exports = function override(config, env) {
     config = rewireReactHotLoader(config, env);
-    //config = rewireSass(config, env);
-    if (env === "production") {
-        // rewireUglify(config);
-    }
     return config;
 };
 
 module.exports = {
     webpack: function(config, env) {
         config = rewireReactHotLoader(config, env);
-        //config = rewireSass(config, env);
-        if (env === "production") {
-            rewireUglify(config);
+
+        // For micro frontend to be included into the main app
+        config.optimization.runtimeChunk = false;
+        config.optimization.splitChunks = {
+            cacheGroups: {
+                default: false
+            }
+        };
+
+        /*
+        config.externals = {
+            react: 'React',
+            'react-dom': 'ReactDOM'
         }
+        */
+
         return config;
     }
 };

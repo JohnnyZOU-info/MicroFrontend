@@ -1,16 +1,17 @@
-import * as React from 'react';
-import ReactDOM from "react-dom";
-import { createBrowserHistory } from "history";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import App from './App';
+import { createEventBus, microApp, NoteMicroApp, subscribeTodoEvents } from './MicroApp';
 import { IMicroAppProps } from './shell/Shell';
-import { createEventBus, microApp, TodoMicroApp } from './MicroApp';
+import { createBrowserHistory } from 'history';
+import './index.css';
 
 declare global {
-  interface Window {
-      todoMicroApp: TodoMicroApp;
-  }
+    interface Window {
+        notesMicroApp: NoteMicroApp;
+    }
 }
-
+  
 const render = (props: IMicroAppProps) => {
     const { containerId, history, host, tokenProvider, eventBus } = props;
     const element = document.getElementById(containerId);
@@ -25,18 +26,19 @@ const render = (props: IMicroAppProps) => {
     const appEventBus = eventBus || createEventBus();
 
     ReactDOM.render(
-        <App initialItems={microApp.appState.items} />, 
+        <App initialHtmlText={microApp.appState.htmlText} />, 
         element
     );
 
     microApp.history = appHistory;
     microApp.eventBus = appEventBus;
+    subscribeTodoEvents();
 }
 
 if (typeof microApp.mount === "undefined") {
     microApp.mount = (props: IMicroAppProps) => {
         render(props);
-        console.info(`mount todo micro app`);
+        console.info(`mount notes micro app`);
     };
 }
 
@@ -51,8 +53,8 @@ if (typeof microApp.unmount === "undefined") {
         microApp.host = undefined;
         microApp.history = undefined;
 
-        console.info(`unmount todo micro app`);
+        console.info(`unmount notes micro app`);
     };
 }
 
-window.todoMicroApp = microApp;
+window.notesMicroApp = microApp;

@@ -1,6 +1,6 @@
 import * as React from "react";
+import { getTodoAppHost } from "../shell/Hosts";
 import { MicroFrontend } from "../shell/MicroFrontend";
-import { getTodoAppHost } from "./Host";
 
 const todoHost = getTodoAppHost();
 
